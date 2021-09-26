@@ -478,7 +478,45 @@ def unwatched_panel_func():
     nextMovieYearLabel.place(x=97, y=610)
 
     def back_button_func():
-        pass
+        global data
+        global maxLength
+        global current_movie
+        global next_movie
+        global movieName
+        global release_day
+        global release_month
+        global release_year
+        global download_status
+        global link
+        global origin
+
+        if current_movie <= 0:
+            current_movie = maxLength + 1
+
+        if next_movie <= 0:
+            next_movie = maxLength + 1
+
+        current_movie -= 1
+        next_movie -= 1
+
+        movieLabel.config(text=data[current_movie][movieName])
+        originLabel.config(text="Origin : " + data[current_movie][origin])
+        releaseDateLabel.config(text="Release Date : " + str(data[current_movie][release_day]) + " " + month_string(
+            str(data[current_movie][release_month])) + " " + str(data[current_movie][release_year]))
+        downloadStatusLabel.config(text="Downloaded : " + data[current_movie][download_status])
+        linkEntry.delete(0, END)
+        linkEntry.insert(0, data[current_movie][link])
+        counterEntry.delete(0, END)
+        counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+        nextMovieLabel.config(text=data[next_movie][movieName])
+        nextMovieYearLabel.config(text=data[next_movie][release_year])
+
+        if current_movie <= 0:
+            current_movie = maxLength + 1
+
+        if next_movie <= 0:
+            next_movie = maxLength + 1
+
 
     backButtonFrame = LabelFrame(unwatchedPanelFrame, bd=0, height=50, width=100, bg=red_dark)
     backButtonFrame.place(x=590, y=565)
@@ -497,14 +535,16 @@ def unwatched_panel_func():
         global download_status
         global link
         global origin
+
+
+        if next_movie >= maxLength:
+            next_movie = -1
+
+        if current_movie >= maxLength:
+            current_movie = -1
+
         current_movie += 1
         next_movie += 1
-
-        if next_movie > maxLength:
-            next_movie = 0
-
-        if current_movie > maxLength:
-            current_movie = 0
 
         movieLabel.config(text=data[current_movie][movieName])
         originLabel.config(text="Origin : " + data[current_movie][origin])
@@ -516,6 +556,12 @@ def unwatched_panel_func():
         counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
         nextMovieLabel.config(text=data[next_movie][movieName])
         nextMovieYearLabel.config(text=data[next_movie][release_year])
+
+        if current_movie >= maxLength:
+            current_movie = -1
+
+        if next_movie >= maxLength:
+            next_movie = -1
 
     nextButtonFrame = LabelFrame(unwatchedPanelFrame, bd=0, height=50, width=100, bg=red_dark)
     nextButtonFrame.place(x=710, y=565)
