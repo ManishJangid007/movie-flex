@@ -1,7 +1,6 @@
 import sqlite3
 from tkinter import *
 from PIL import ImageTk, Image
-import re
 from database_data import DataMachine
 from datetime import date
 import DashboardData
@@ -264,12 +263,10 @@ def add_panel_func():
         messageLabel.place(x=650, y=546)
 
         filtered_data = filter_result(movie_name, watched_status, download_status, origin, link, release_day, release_month, release_year, duplicate_check=True)
-        print(filtered_data)
 
         if filtered_data[0]:
             try:
-                DataMachine().add_movie(movie_name, release_day, release_month, release_year, filtered_data[1],
-                                        filtered_data[2], filtered_data[4], filtered_data[origin])
+                DataMachine().add_movie(movie_name, release_day, release_month, release_year, filtered_data[1], filtered_data[2], filtered_data[4], filtered_data[3])
                 messageLabel.config(text="Added Successfully", fg=font_color)
                 messageLabel.place(x=600, y=546)
 
@@ -285,12 +282,12 @@ def add_panel_func():
                 monthEntry.insert(0, "00")
                 yearEntry.delete(0, END)
                 yearEntry.insert(0, "0000")
-
                 return
             except:
                 messageLabel.config(text="Failed", fg=error_color)
                 messageLabel.place(x=650, y=546)
                 return
+
         else:
             messageLabel.config(text=filtered_data[1], fg=error_color)
             messageLabel.place(x=573, y=546)

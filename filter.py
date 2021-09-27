@@ -34,7 +34,7 @@ def filter_result(movie_name, watched_status, download_status, origin, link, rel
     else:
         return False, "*Enter the Origin"
 
-    if len(link) <= 0 or link == "null" or link == "Null" or link == "NULL" or "Not Available" or "not available" or "NOT AVAILABLE":
+    if len(link) <= 0 or link == "null" or link == "Null" or link == "NULL" or link == "Not Available" or link == "not available" or link == "NOT AVAILABLE":
         link = "Not Available"
 
     if re.findall("[a-zA-Z]", release_day) or len(release_day) <= 0:
