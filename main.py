@@ -22,6 +22,8 @@ pink = "#d565a6"
 red_light = "#f26f72"
 red_dark = "#ea3b4c"
 grey_font = "#d3d3d3"
+yellow_light = "#e8bd73"
+yellow_dark = "#eab957"
 
 # Font
 font = "Bahnschrift"
@@ -29,6 +31,7 @@ font_color = "#ffffff"
 font_darkcolor = "#4c4c4d"
 input_font_color = "#1e1e1e"
 error_color = "#ff1f1f"
+black_font = "#231f20"
 
 # Pngs
 backgroundPng = ImageTk.PhotoImage(Image.open("assets/background.png"))
@@ -63,6 +66,11 @@ otherPanelPng = ImageTk.PhotoImage(Image.open("assets/othersPanel.png"))
 nextButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/next.png"))
 backButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/backButton.png"))
 editButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/editButton.png"))
+
+editPagePng = ImageTk.PhotoImage(Image.open("assets/editPanelPng.png"))
+updateButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/updateButtonPng.png"))
+cancelButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/cancel.png"))
+deleteButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/deleteButton.png"))
 
 background = Label(root, bd=0, image=backgroundPng)
 background.place(x=0, y=0)
@@ -390,6 +398,100 @@ def add_panel_func():
     addButton = Button(addPanelFrame, bd=0, bg=light_orange, activebackground=light_orange, image=addButtonPng, command=add_movies_func)
     addButton.place(x=634, y=468)
 
+# Edit Page
+
+
+def edit_page(frame, m_id):
+    edit_page_frame = LabelFrame(frame, bd=0, bg=backgroundColor, width=865, height=665)
+    edit_page_frame.place(x=0, y=0)
+
+    conn = sqlite3.connect("movies_data.db")
+    cur = conn.cursor()
+    cur.execute("select * from movies where m_id=:m_id", {
+        "m_id": m_id
+    })
+    data = cur.fetchall()
+
+    current_movie = 0
+    movie_name = 1
+    release_day = 2
+    release_month = 3
+    release_year = 4
+    watched_status = 5
+    download_status = 6
+    link = 7
+    origin = 8
+
+    editPage = Label(edit_page_frame, bd=0, bg=backgroundColor, image=editPagePng)
+    editPage.place(x=-22, y=15)
+
+    nameLabel = Label(edit_page_frame, text="Name", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    nameLabel.place(x=50, y=48)
+    nameEntry = Entry(edit_page_frame, bd=0, width=16, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    nameEntry.place(x=178, y=50)
+    nameEntry.insert(0, data[current_movie][movie_name])
+
+    originLabel = Label(edit_page_frame, text="Origin", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    originLabel.place(x=50, y=120)
+    originEntry = Entry(edit_page_frame, bd=0, width=16, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    originEntry.place(x=178, y=124)
+    originEntry.insert(0, data[current_movie][origin])
+
+    releaseDayLabel = Label(edit_page_frame, text="Release Day", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    releaseDayLabel.place(x=50, y=195)
+    releaseDayEntry = Entry(edit_page_frame, bd=0, width=10, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    releaseDayEntry.place(x=281, y=200)
+    releaseDayEntry.insert(0, data[current_movie][release_day])
+
+    releaseMonthLabel = Label(edit_page_frame, text="Release Month", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    releaseMonthLabel.place(x=50, y=272)
+    releaseMonthEntry = Entry(edit_page_frame, bd=0, width=8, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    releaseMonthEntry.place(x=319, y=275)
+    releaseMonthEntry.insert(0, data[current_movie][release_month])
+
+    releaseYearLabel = Label(edit_page_frame, text="Release Year", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    releaseYearLabel.place(x=50, y=349)
+    releaseYearEntry = Entry(edit_page_frame, bd=0, width=10, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    releaseYearEntry.place(x=287, y=350)
+    releaseYearEntry.insert(0, data[current_movie][release_year])
+
+    linkLabel = Label(edit_page_frame, text="Link", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    linkLabel.place(x=50, y=426)
+    linkEntry = Entry(edit_page_frame, bd=0, width=17, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    linkEntry.place(x=157, y=425)
+    linkEntry.insert(0, data[current_movie][link])
+
+    watchedLabel = Label(edit_page_frame, text="Watched", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    watchedLabel.place(x=560, y=52)
+    watchedEntry = Entry(edit_page_frame, bd=0, width=5, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    watchedEntry.place(x=730, y=54)
+    watchedEntry.insert(0, data[current_movie][watched_status])
+
+    downloadedLabel = Label(edit_page_frame, text="Downloaded", bd=0, bg=yellow_dark, fg=black_font, font=(font, 25, "normal"))
+    downloadedLabel.place(x=503, y=121)
+    downloadedEntry = Entry(edit_page_frame, bd=0, width=5, bg=yellow_light, fg=black_font, font=(font, 25, "normal"), justify="center")
+    downloadedEntry.place(x=730, y=124)
+    downloadedEntry.insert(0, data[current_movie][download_status])
+
+    messageLabel = Label(edit_page_frame, text="Message", bd=0, bg=yellow_light, fg=black_font, font=(font, 18, "normal"))
+    messageLabel.place(x=615, y=235)
+
+    def delete_button_func():
+        DataMachine().delete_movie(m_id)
+        edit_page_frame.destroy()
+
+    deleteButton = Button(edit_page_frame, bd=0, bg=yellow_dark, activebackground=yellow_dark, image=deleteButtonPng, command=delete_button_func)
+    deleteButton.place(x=595, y=380)
+
+    updateButton = Button(edit_page_frame, bd=0, bg=yellow_light, activebackground=yellow_light, image=updateButtonPng)
+    updateButton.place(x=280, y=550)
+
+    def cancel_button_func():
+        edit_page_frame.destroy()
+
+    cancelButton = Button(edit_page_frame, bd=0, bg=yellow_light, activebackground=yellow_light, image=cancelButtonPng, command=cancel_button_func)
+    cancelButton.place(x=460, y=550)
+
 # Unwatched Panel
 
 
@@ -554,7 +656,10 @@ def unwatched_panel_func():
     nextButton = Button(nextButtonFrame, bd=0, bg=red_dark, activebackground=red_dark, image=nextButtonPng, command=next_button_func)
     nextButton.place(x=0, y=0)
 
-    editButton = Button(unwatchedPanelFrame, bd=0, bg=red_light, activebackground=red_light, image=editButtonPng)
+    def edit_button_func():
+        edit_page(unwatchedPanelFrame, data[current_movie][0])
+
+    editButton = Button(unwatchedPanelFrame, bd=0, bg=red_light, activebackground=red_light, image=editButtonPng, command=edit_button_func)
     editButton.place(x=710, y=35)
 
 # To Download Panel
