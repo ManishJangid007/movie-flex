@@ -6,6 +6,7 @@ from database_data import DataMachine
 from datetime import date
 import DashboardData
 from monthSrtring import month_string
+from filter import filter_result
 
 root = Tk()
 root.title("Movie Flex")
@@ -262,138 +263,37 @@ def add_panel_func():
         messageLabel.config(text="Message", fg=font_color)
         messageLabel.place(x=650, y=546)
 
-        if len(movie_name) <= 0:
-            messageLabel.config(text="*Enter Movie Name", fg=error_color)
-            messageLabel.place(x=600, y=546)
-            return
+        filtered_data = filter_result(movie_name, watched_status, download_status, origin, link, release_day, release_month, release_year, duplicate_check=True)
+        print(filtered_data)
 
-        if watched_status == "Yes" or watched_status == "yes" or watched_status == "YES" or watched_status == "y" or watched_status == "Y" or watched_status == "No" or watched_status == "no" or watched_status == "NO" or watched_status == "n" or watched_status == "N":
-            if watched_status == "Yes" or watched_status == "yes" or watched_status == "YES" or watched_status == "y" or watched_status == "Y":
-                watched_status = "Yes"
-            elif watched_status == "No" or watched_status == "no" or watched_status == "NO" or watched_status == "n" or watched_status == "N":
-                watched_status = "No"
-        else:
-            messageLabel.config(text="*Tell Us Watched Status", fg=error_color)
-            messageLabel.place(x=580, y=546)
-            return
+        if filtered_data[0]:
+            try:
+                DataMachine().add_movie(movie_name, release_day, release_month, release_year, filtered_data[1],
+                                        filtered_data[2], filtered_data[4], filtered_data[origin])
+                messageLabel.config(text="Added Successfully", fg=font_color)
+                messageLabel.place(x=600, y=546)
 
-        if download_status == "Yes" or download_status == "yes" or download_status == "YES" or download_status == "y" or download_status == "Y" or download_status == "No" or download_status == "no" or download_status == "NO" or download_status == "n" or download_status == "N":
-            if download_status == "Yes" or download_status == "yes" or download_status == "YES" or download_status == "y" or download_status == "Y":
-                download_status = "Yes"
-            elif download_status == "No" or download_status == "no" or download_status == "NO" or download_status == "n" or download_status == "N":
-                download_status = "No"
-        else:
-            messageLabel.config(text="*Tell Us Download Status", fg=error_color)
-            messageLabel.place(x=573, y=546)
-            return
+                nameEntry.delete(0, END)
+                watchedornotEntry.delete(0, END)
+                downloadedornotEntry.delete(0, END)
+                originEntry.delete(0, END)
+                sourcelinkEntry.delete(0, END)
+                sourcelinkEntry.insert(0, "Null")
+                dayEntry.delete(0, END)
+                dayEntry.insert(0, "00")
+                monthEntry.delete(0, END)
+                monthEntry.insert(0, "00")
+                yearEntry.delete(0, END)
+                yearEntry.insert(0, "0000")
 
-        if origin == "Hollywood" or origin == "hollywood" or origin == "Bollywood" or origin == "bollywood" or origin == "Tollywood" or origin == "tollywood" or origin == "Other" or origin == "other":
-            if origin == "hollywood":
-                origin = "Hollywood"
-            elif origin == "bollywood":
-                origin = "Bollywood"
-            elif origin == "tollywood":
-                origin = "Tollywood"
-            elif origin == "other":
-                origin = "Other"
-        else:
-            messageLabel.config(text="*Enter the Origin", fg=error_color)
-            messageLabel.place(x=610, y=546)
-            return
-
-        if len(link) <= 0 or link == "null" or link == "Null" or link == "NULL":
-            link = "Not Available"
-
-        if re.findall("[a-zA-Z]", release_day) or len(release_day) <= 0:
-            messageLabel.config(text="*Enter Day of Release", fg=error_color)
-            messageLabel.place(x=590, y=546)
-            return
-
-        if re.findall("[a-zA-Z]", release_month) or len(release_month) <= 0:
-            messageLabel.config(text="*Enter Month of Release", fg=error_color)
-            messageLabel.place(x=580, y=546)
-            return
-
-        if re.findall("[a-zA-Z]", release_year) or len(release_year) <= 3:
-            messageLabel.config(text="*Enter Year of Release", fg=error_color)
-            messageLabel.place(x=585, y=546)
-            return
-
-        if len((release_year)) == 4 and int(release_year) >= 1000:
-            if int(release_month) >= 1 and int(release_month) <= 12:
-                max_days = 31
-                if int(release_month) == 1:
-                    max_days = 31
-                elif int(release_month) == 2:
-                    if (int(release_year) % 4) == 0:
-                        max_days = 29
-                    else:
-                        max_days = 28
-                elif int(release_month) == 3:
-                    max_days = 31
-                elif int(release_month) == 4:
-                    max_days = 30
-                elif int(release_month) == 5:
-                    max_days = 31
-                elif int(release_month) == 6:
-                    max_days = 30
-                elif int(release_month) == 7:
-                    max_days = 31
-                elif int(release_month) == 8:
-                    max_days = 31
-                elif int(release_month) == 9:
-                    max_days = 30
-                elif int(release_month) == 10:
-                    max_days = 31
-                elif int(release_month) == 11:
-                    max_days = 30
-                elif int(release_month) == 12:
-                    max_days = 31
-
-                if int(release_day) >= 1 and int(release_day) <= max_days:
-                    pass
-                else:
-                    messageLabel.config(text="*Enter Day of Release", fg=error_color)
-                    messageLabel.place(x=590, y=546)
-                    return
-            else:
-                messageLabel.config(text="*Enter Month of Release", fg=error_color)
-                messageLabel.place(x=580, y=546)
+                return
+            except:
+                messageLabel.config(text="Failed", fg=error_color)
+                messageLabel.place(x=650, y=546)
                 return
         else:
-            messageLabel.config(text="*Enter Year of Release", fg=error_color)
-            messageLabel.place(x=585, y=546)
-            return
-
-        if DataMachine().duplicate_entry(movie_name, release_day, release_month) == True:
-            messageLabel.config(text="*Duplicate Entry", fg=error_color)
-            messageLabel.place(x=615, y=546)
-            return
-
-        try:
-            DataMachine().add_movie(movie_name, release_day, release_month, release_year, watched_status,
-                                    download_status, link, origin)
-            messageLabel.config(text="Added Successfully", fg=font_color)
-            messageLabel.place(x=600, y=546)
-
-            nameEntry.delete(0, END)
-            watchedornotEntry.delete(0, END)
-            downloadedornotEntry.delete(0, END)
-            originEntry.delete(0, END)
-            sourcelinkEntry.delete(0, END)
-            sourcelinkEntry.insert(0, "Null")
-            dayEntry.delete(0, END)
-            dayEntry.insert(0, "00")
-            monthEntry.delete(0, END)
-            monthEntry.insert(0, "00")
-            yearEntry.delete(0, END)
-            yearEntry.insert(0, "0000")
-
-            return
-        except:
-            messageLabel.config(text="Failed", fg=error_color)
-            messageLabel.place(x=650, y=546)
-            return
+            messageLabel.config(text=filtered_data[1], fg=error_color)
+            messageLabel.place(x=573, y=546)
 
     addButton = Button(addPanelFrame, bd=0, bg=light_orange, activebackground=light_orange, image=addButtonPng, command=add_movies_func)
     addButton.place(x=634, y=468)
@@ -479,11 +379,31 @@ def edit_page(frame, m_id):
     def delete_button_func():
         DataMachine().delete_movie(m_id)
         edit_page_frame.destroy()
+        frame.destroy()
+        dashboard_panel_func()
 
     deleteButton = Button(edit_page_frame, bd=0, bg=yellow_dark, activebackground=yellow_dark, image=deleteButtonPng, command=delete_button_func)
     deleteButton.place(x=595, y=380)
 
-    updateButton = Button(edit_page_frame, bd=0, bg=yellow_light, activebackground=yellow_light, image=updateButtonPng)
+    def update_button_func():
+        messageLabel.config(text="Message", fg=black_font)
+        messageLabel.place(x=615, y=235)
+        filter_data = filter_result(nameEntry.get(), watchedEntry.get(), downloadedEntry.get(), originEntry.get(), linkEntry.get(), releaseDayEntry.get(), releaseMonthEntry.get(), releaseYearEntry.get())
+        if filter_data[0]:
+            DataMachine().update_name(m_id, nameEntry.get())
+            DataMachine().update_origin(m_id, filter_data[3])
+            DataMachine().update_release_date(m_id, releaseDayEntry.get(), releaseMonthEntry.get(), releaseYearEntry.get())
+            DataMachine().update_link(m_id, filter_data[4])
+            DataMachine().update_wuw_status(m_id, filter_data[1])
+            DataMachine().update_download_status(m_id, filter_data[2])
+            edit_page_frame.destroy()
+            frame.destroy()
+            dashboard_panel_func()
+        else:
+            messageLabel.config(text=filter_data[1], fg=error_color)
+            messageLabel.place(x=540, y=235)
+
+    updateButton = Button(edit_page_frame, bd=0, bg=yellow_light, activebackground=yellow_light, image=updateButtonPng, command=update_button_func)
     updateButton.place(x=280, y=550)
 
     def cancel_button_func():
@@ -505,7 +425,7 @@ def unwatched_panel_func():
 
     conn = sqlite3.connect("movies_data.db")
     cur = conn.cursor()
-    cur.execute("select * from movies where wuw_status = 'Yes'")
+    cur.execute("select * from movies where wuw_status = 'No'")
     global data
     data = cur.fetchall()
     rowcount = len(data)
@@ -573,11 +493,16 @@ def unwatched_panel_func():
     upNextLabel = Label(unwatchedPanelFrame, text="Up Next", bd=0, bg=red_dark, fg=font_color, font=(font, 20, 'normal'))
     upNextLabel.place(x=78, y=530)
 
-    nextMovieLabel = Label(unwatchedPanelFrame, text=data[next_movie][movieName], bd=0, bg=red_dark, fg=grey_font, font=(font, 16, 'normal'))
-    nextMovieLabel.place(x=97, y=575)
+    try:
+        nextMovieLabel = Label(unwatchedPanelFrame, text=data[next_movie][movieName], bd=0, bg=red_dark, fg=grey_font,
+                               font=(font, 16, 'normal'))
+        nextMovieLabel.place(x=97, y=575)
 
-    nextMovieYearLabel = Label(unwatchedPanelFrame, text=data[next_movie][release_year], bd=0, bg=red_dark, fg=grey_font, font=(font, 16, 'normal'))
-    nextMovieYearLabel.place(x=97, y=610)
+        nextMovieYearLabel = Label(unwatchedPanelFrame, text=data[next_movie][release_year], bd=0, bg=red_dark,
+                                   fg=grey_font, font=(font, 16, 'normal'))
+        nextMovieYearLabel.place(x=97, y=610)
+    except:
+        pass
 
     def back_button_func():
         global data
@@ -592,24 +517,25 @@ def unwatched_panel_func():
         global link
         global origin
 
-        next_movie = current_movie + 1
+        if maxLength != 0:
+            next_movie = current_movie + 1
 
-        if current_movie > 0:
-            current_movie -= 1
-            movieLabel.config(text=data[current_movie][movieName])
-            originLabel.config(text="Origin : " + data[current_movie][origin])
-            releaseDateLabel.config(text="Release Date : " + str(data[current_movie][release_day]) + " " + month_string(
-                str(data[current_movie][release_month])) + " " + str(data[current_movie][release_year]))
-            downloadStatusLabel.config(text="Downloaded : " + data[current_movie][download_status])
-            linkEntry.delete(0, END)
-            linkEntry.insert(0, data[current_movie][link])
-            counterEntry.delete(0, END)
-            counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+            if current_movie > 0:
+                current_movie -= 1
+                movieLabel.config(text=data[current_movie][movieName])
+                originLabel.config(text="Origin : " + data[current_movie][origin])
+                releaseDateLabel.config(text="Release Date : " + str(data[current_movie][release_day]) + " " + month_string(
+                    str(data[current_movie][release_month])) + " " + str(data[current_movie][release_year]))
+                downloadStatusLabel.config(text="Downloaded : " + data[current_movie][download_status])
+                linkEntry.delete(0, END)
+                linkEntry.insert(0, data[current_movie][link])
+                counterEntry.delete(0, END)
+                counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
 
-        if next_movie > 1:
-            next_movie -= 1
-            nextMovieLabel.config(text=data[next_movie][movieName])
-            nextMovieYearLabel.config(text=data[next_movie][release_year])
+            if next_movie > 1:
+                next_movie -= 1
+                nextMovieLabel.config(text=data[next_movie][movieName])
+                nextMovieYearLabel.config(text=data[next_movie][release_year])
 
     backButtonFrame = LabelFrame(unwatchedPanelFrame, bd=0, height=50, width=100, bg=red_dark)
     backButtonFrame.place(x=590, y=565)
@@ -629,26 +555,27 @@ def unwatched_panel_func():
         global link
         global origin
 
-        next_movie = current_movie + 1
+        if maxLength != 0:
+            next_movie = current_movie + 1
 
-        if current_movie < maxLength:
-            current_movie += 1
-            movieLabel.config(text=data[current_movie][movieName])
-            originLabel.config(text="Origin : " + data[current_movie][origin])
-            releaseDateLabel.config(text="Release Date : " + str(data[current_movie][release_day]) + " " + month_string(str(data[current_movie][release_month])) + " " + str(data[current_movie][release_year]))
-            downloadStatusLabel.config(text="Downloaded : " + data[current_movie][download_status])
-            linkEntry.delete(0, END)
-            linkEntry.insert(0, data[current_movie][link])
-            counterEntry.delete(0, END)
-            counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+            if current_movie < maxLength:
+                current_movie += 1
+                movieLabel.config(text=data[current_movie][movieName])
+                originLabel.config(text="Origin : " + data[current_movie][origin])
+                releaseDateLabel.config(text="Release Date : " + str(data[current_movie][release_day]) + " " + month_string(str(data[current_movie][release_month])) + " " + str(data[current_movie][release_year]))
+                downloadStatusLabel.config(text="Downloaded : " + data[current_movie][download_status])
+                linkEntry.delete(0, END)
+                linkEntry.insert(0, data[current_movie][link])
+                counterEntry.delete(0, END)
+                counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
 
-        if next_movie < maxLength:
-            next_movie += 1
-            nextMovieLabel.config(text=data[next_movie][movieName])
-            nextMovieYearLabel.config(text=data[next_movie][release_year])
-        else:
-            nextMovieLabel.config(text="Finished !")
-            nextMovieYearLabel.config(text="")
+            if next_movie < maxLength:
+                next_movie += 1
+                nextMovieLabel.config(text=data[next_movie][movieName])
+                nextMovieYearLabel.config(text=data[next_movie][release_year])
+            else:
+                nextMovieLabel.config(text="Finished !")
+                nextMovieYearLabel.config(text="")
 
 
     nextButtonFrame = LabelFrame(unwatchedPanelFrame, bd=0, height=50, width=100, bg=red_dark)
