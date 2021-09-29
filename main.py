@@ -72,6 +72,10 @@ updateButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/updateButtonPng.
 cancelButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/cancel.png"))
 deleteButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/deleteButton.png"))
 
+nextDarkButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/next_with_dark.png"))
+backDarkButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/back_with_dark.png"))
+editDarkButtonPng = ImageTk.PhotoImage(Image.open("assets/buttons/edit_dark_button.png"))
+
 background = Label(root, bd=0, image=backgroundPng)
 background.place(x=0, y=0)
 
@@ -595,8 +599,8 @@ def todownload_panel_func():
     todownloadPanelFrame = LabelFrame(root, bd=0, bg=backgroundColor, width=865, height=665)
     todownloadPanelFrame.place(x=310, y=2)
 
-    todownloadPanel = Label(todownloadPanelFrame, bd=0, bg=backgroundColor, image=watchedPanelPng)
-    todownloadPanel.place(x=-217, y=11)
+    todownloadPanel = Label(todownloadPanelFrame, bd=0, bg=backgroundColor, image=toDownloadPanelPng)
+    todownloadPanel.place(x=-22, y=15)
 
     conn = sqlite3.connect("movies_data.db")
     cur = conn.cursor()
@@ -607,10 +611,10 @@ def todownload_panel_func():
     conn.close()
 
     if rowcount == 0:
-        smily = Label(todownloadPanelFrame, text="Nothing Found :)", bd=0, bg=red_light, fg=font_color, font=(font, 30, "normal"))
+        smily = Label(todownloadPanelFrame, text="Nothing Found :)", bd=0, bg=yellow_dark, fg=black_font, font=(font, 30, "normal"))
         smily.place(x=280, y=250)
 
-        emptyLabel = Label(todownloadPanelFrame, text="It's Empty Here !", bd=0, bg=red_dark, fg=font_color,
+        emptyLabel = Label(todownloadPanelFrame, text="It's Empty Here !", bd=0, bg=yellow_light, fg=black_font,
                       font=(font, 20, "normal"))
         emptyLabel.place(x=330, y=550)
         return
@@ -638,53 +642,53 @@ def todownload_panel_func():
     global origin
     origin = 8
 
-    movieLabel = Label(todownloadPanelFrame, text=data2[current_movie][movieName], bd=0, bg=red_light, fg=font_color,
+    movieLabel = Label(todownloadPanelFrame, text=data2[current_movie][movieName], bd=0, bg=yellow_dark, fg=black_font,
                            font=(font, 35, 'normal'))
     movieLabel.place(x=78, y=100)
 
-    originLabel = Label(todownloadPanelFrame, text="Origin : " + data2[current_movie][origin], bd=0, bg=red_light,
-                            fg=font_color, font=(font, 30, 'normal'))
+    originLabel = Label(todownloadPanelFrame, text="Origin : " + data2[current_movie][origin], bd=0, bg=yellow_dark,
+                            fg=black_font, font=(font, 30, 'normal'))
     originLabel.place(x=110, y=175)
 
     releaseDateLabel = Label(todownloadPanelFrame,
                                 text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
                                 str(data2[current_movie][release_month])) + " " + str(
                                 data2[current_movie][release_year]),
-                                bd=0, bg=red_light,
-                                fg=font_color,
+                                bd=0, bg=yellow_dark,
+                                fg=black_font,
                                 font=(font, 30, 'normal'))
     releaseDateLabel.place(x=110, y=235)
 
     watchedStatusLabel = Label(todownloadPanelFrame, text="Watched : " + data2[current_movie][watched_status],
-                                    bd=0, bg=red_light, fg=font_color, font=(font, 30, 'normal'))
+                                    bd=0, bg=yellow_dark, fg=black_font, font=(font, 30, 'normal'))
     watchedStatusLabel.place(x=110, y=290)
 
-    linkLabel = Label(todownloadPanelFrame, text="Link : ", bd=0, bg=red_light, fg=font_color,
+    linkLabel = Label(todownloadPanelFrame, text="Link : ", bd=0, bg=yellow_dark, fg=black_font,
                           font=(font, 30, 'normal'))
     linkLabel.place(x=110, y=350)
 
-    linkEntry = Entry(todownloadPanelFrame, bd=0, bg=red_light, width=25, fg=font_color, font=(font, 30, 'normal'),
+    linkEntry = Entry(todownloadPanelFrame, bd=0, bg=yellow_dark, width=25, fg=black_font, font=(font, 30, 'normal'),
                           justify="left")
     linkEntry.place(x=220, y=350)
     linkEntry.insert(0, data2[current_movie][link])
 
-    counterEntry = Entry(todownloadPanelFrame, bd=0, bg=red_light, width=10, fg=font_color, font=(font, 35, 'normal'),
+    counterEntry = Entry(todownloadPanelFrame, bd=0, bg=yellow_dark, width=10, fg=black_font, font=(font, 35, 'normal'),
                              justify="right")
     counterEntry.place(x=560, y=450)
     counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
 
-    upNextLabel = Label(todownloadPanelFrame, text="Up Next", bd=0, bg=red_dark, fg=font_color,
+    upNextLabel = Label(todownloadPanelFrame, text="Up Next", bd=0, bg=yellow_light, fg=black_font,
                             font=(font, 20, 'normal'))
     upNextLabel.place(x=78, y=530)
 
     try:
-        nextMovieLabel = Label(todownloadPanelFrame, text=data2[next_movie][movieName], bd=0, bg=red_dark,
-                                fg=grey_font,
+        nextMovieLabel = Label(todownloadPanelFrame, text=data2[next_movie][movieName], bd=0, bg=yellow_light,
+                                fg=font_darkcolor,
                                 font=(font, 16, 'normal'))
         nextMovieLabel.place(x=97, y=575)
 
-        nextMovieYearLabel = Label(todownloadPanelFrame, text=data2[next_movie][release_year], bd=0, bg=red_dark,
-                                   fg=grey_font, font=(font, 16, 'normal'))
+        nextMovieYearLabel = Label(todownloadPanelFrame, text=data2[next_movie][release_year], bd=0, bg=yellow_light,
+                                   fg=font_darkcolor, font=(font, 16, 'normal'))
         nextMovieYearLabel.place(x=97, y=610)
     except:
         pass
@@ -723,9 +727,9 @@ def todownload_panel_func():
                 nextMovieLabel.config(text=data2[next_movie][movieName])
                 nextMovieYearLabel.config(text=data2[next_movie][release_year])
 
-    backButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=red_dark)
+    backButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=yellow_light)
     backButtonFrame.place(x=590, y=565)
-    backButton = Button(backButtonFrame, bd=0, bg=red_dark, activebackground=red_dark, image=backButtonPng,
+    backButton = Button(backButtonFrame, bd=0, bg=yellow_light, activebackground=yellow_light, image=backDarkButtonPng,
                         command=back_button_func)
     backButton.place(x=0, y=0)
 
@@ -766,16 +770,16 @@ def todownload_panel_func():
                 nextMovieLabel.config(text="Finished !")
                 nextMovieYearLabel.config(text="")
 
-    nextButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=red_dark)
+    nextButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=yellow_light)
     nextButtonFrame.place(x=710, y=565)
-    nextButton = Button(nextButtonFrame, bd=0, bg=red_dark, activebackground=red_dark, image=nextButtonPng,
+    nextButton = Button(nextButtonFrame, bd=0, bg=yellow_light, activebackground=yellow_light, image=nextDarkButtonPng,
                             command=next_button_func)
     nextButton.place(x=0, y=0)
 
     def edit_button_func():
         edit_page(todownloadPanelFrame, data2[current_movie][0])
 
-    editButton = Button(todownloadPanelFrame, bd=0, bg=red_light, activebackground=red_light, image=editButtonPng,
+    editButton = Button(todownloadPanelFrame, bd=0, bg=yellow_dark, activebackground=yellow_dark, image=editDarkButtonPng,
                         command=edit_button_func)
     editButton.place(x=710, y=35)
 
@@ -789,7 +793,7 @@ def watched_panel_func():
     watchedPanelFrame.place(x=310, y=2)
 
     watchedPanel = Label(watchedPanelFrame, bd=0, bg=backgroundColor, image=watchedPanelPng)
-    watchedPanel.place(x=-217, y=11)
+    watchedPanel.place(x=-22, y=15)
 
     conn = sqlite3.connect("movies_data.db")
     cur = conn.cursor()
