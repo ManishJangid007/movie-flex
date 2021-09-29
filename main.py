@@ -595,8 +595,190 @@ def todownload_panel_func():
     todownloadPanelFrame = LabelFrame(root, bd=0, bg=backgroundColor, width=865, height=665)
     todownloadPanelFrame.place(x=310, y=2)
 
-    todownloadPanel = Label(todownloadPanelFrame, bd=0, bg=backgroundColor, image=toDownloadPanelPng)
-    todownloadPanel.place(x=6, y=11)
+    todownloadPanel = Label(todownloadPanelFrame, bd=0, bg=backgroundColor, image=watchedPanelPng)
+    todownloadPanel.place(x=-217, y=11)
+
+    conn = sqlite3.connect("movies_data.db")
+    cur = conn.cursor()
+    cur.execute("select * from movies where download_status = 'No'")
+    global data2
+    data2 = cur.fetchall()
+    rowcount = len(data2)
+    conn.close()
+
+    if rowcount == 0:
+        smily = Label(todownloadPanelFrame, text="Nothing Found :)", bd=0, bg=red_light, fg=font_color, font=(font, 30, "normal"))
+        smily.place(x=280, y=250)
+
+        emptyLabel = Label(todownloadPanelFrame, text="It's Empty Here !", bd=0, bg=red_dark, fg=font_color,
+                      font=(font, 20, "normal"))
+        emptyLabel.place(x=330, y=550)
+        return
+
+    # data[<row>][<column>]
+
+    global maxLength
+    maxLength = rowcount - 1
+    global current_movie
+    current_movie = 0
+    global next_movie
+    next_movie = current_movie + 1
+    global movieName
+    movieName = 1
+    global release_day
+    release_day = 2
+    global release_month
+    release_month = 3
+    global release_year
+    release_year = 4
+    global download_status
+    download_status = 6
+    global link
+    link = 7
+    global origin
+    origin = 8
+
+    movieLabel = Label(todownloadPanelFrame, text=data2[current_movie][movieName], bd=0, bg=red_light, fg=font_color,
+                           font=(font, 35, 'normal'))
+    movieLabel.place(x=78, y=100)
+
+    originLabel = Label(todownloadPanelFrame, text="Origin : " + data2[current_movie][origin], bd=0, bg=red_light,
+                            fg=font_color, font=(font, 30, 'normal'))
+    originLabel.place(x=110, y=175)
+
+    releaseDateLabel = Label(todownloadPanelFrame,
+                                text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
+                                str(data2[current_movie][release_month])) + " " + str(
+                                data2[current_movie][release_year]),
+                                bd=0, bg=red_light,
+                                fg=font_color,
+                                font=(font, 30, 'normal'))
+    releaseDateLabel.place(x=110, y=235)
+
+    downloadStatusLabel = Label(todownloadPanelFrame, text="Downloaded : " + data2[current_movie][download_status],
+                                    bd=0, bg=red_light, fg=font_color, font=(font, 30, 'normal'))
+    downloadStatusLabel.place(x=110, y=290)
+
+    linkLabel = Label(todownloadPanelFrame, text="Link : ", bd=0, bg=red_light, fg=font_color,
+                          font=(font, 30, 'normal'))
+    linkLabel.place(x=110, y=350)
+
+    linkEntry = Entry(todownloadPanelFrame, bd=0, bg=red_light, width=25, fg=font_color, font=(font, 30, 'normal'),
+                          justify="left")
+    linkEntry.place(x=220, y=350)
+    linkEntry.insert(0, data2[current_movie][link])
+
+    counterEntry = Entry(todownloadPanelFrame, bd=0, bg=red_light, width=10, fg=font_color, font=(font, 35, 'normal'),
+                             justify="right")
+    counterEntry.place(x=560, y=450)
+    counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+
+    upNextLabel = Label(todownloadPanelFrame, text="Up Next", bd=0, bg=red_dark, fg=font_color,
+                            font=(font, 20, 'normal'))
+    upNextLabel.place(x=78, y=530)
+
+    try:
+        nextMovieLabel = Label(todownloadPanelFrame, text=data2[next_movie][movieName], bd=0, bg=red_dark,
+                                fg=grey_font,
+                                font=(font, 16, 'normal'))
+        nextMovieLabel.place(x=97, y=575)
+
+        nextMovieYearLabel = Label(todownloadPanelFrame, text=data2[next_movie][release_year], bd=0, bg=red_dark,
+                                   fg=grey_font, font=(font, 16, 'normal'))
+        nextMovieYearLabel.place(x=97, y=610)
+    except:
+        pass
+
+    def back_button_func():
+        global data2
+        global maxLength
+        global current_movie
+        global next_movie
+        global movieName
+        global release_day
+        global release_month
+        global release_year
+        global download_status
+        global link
+        global origin
+
+        if maxLength != 0:
+            next_movie = current_movie + 1
+
+            if current_movie > 0:
+                current_movie -= 1
+                movieLabel.config(text=data2[current_movie][movieName])
+                originLabel.config(text="Origin : " + data2[current_movie][origin])
+                releaseDateLabel.config(
+                    text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
+                    str(data2[current_movie][release_month])) + " " + str(data2[current_movie][release_year]))
+                downloadStatusLabel.config(text="Downloaded : " + data2[current_movie][download_status])
+                linkEntry.delete(0, END)
+                linkEntry.insert(0, data2[current_movie][link])
+                counterEntry.delete(0, END)
+                counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+
+            if next_movie > 1:
+                next_movie -= 1
+                nextMovieLabel.config(text=data2[next_movie][movieName])
+                nextMovieYearLabel.config(text=data2[next_movie][release_year])
+
+    backButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=red_dark)
+    backButtonFrame.place(x=590, y=565)
+    backButton = Button(backButtonFrame, bd=0, bg=red_dark, activebackground=red_dark, image=backButtonPng,
+                        command=back_button_func)
+    backButton.place(x=0, y=0)
+
+    def next_button_func():
+        global data2
+        global maxLength
+        global current_movie
+        global next_movie
+        global movieName
+        global release_day
+        global release_month
+        global release_year
+        global download_status
+        global link
+        global origin
+
+        if maxLength != 0:
+            next_movie = current_movie + 1
+
+            if current_movie < maxLength:
+                current_movie += 1
+                movieLabel.config(text=data2[current_movie][movieName])
+                originLabel.config(text="Origin : " + data2[current_movie][origin])
+                releaseDateLabel.config(
+                    text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
+                        str(data2[current_movie][release_month])) + " " + str(data2[current_movie][release_year]))
+                downloadStatusLabel.config(text="Downloaded : " + data2[current_movie][download_status])
+                linkEntry.delete(0, END)
+                linkEntry.insert(0, data2[current_movie][link])
+                counterEntry.delete(0, END)
+                counterEntry.insert(0, str(current_movie + 1) + " of " + str(rowcount))
+
+            if next_movie < maxLength:
+                next_movie += 1
+                nextMovieLabel.config(text=data2[next_movie][movieName])
+                nextMovieYearLabel.config(text=data2[next_movie][release_year])
+            else:
+                nextMovieLabel.config(text="Finished !")
+                nextMovieYearLabel.config(text="")
+
+    nextButtonFrame = LabelFrame(todownloadPanelFrame, bd=0, height=50, width=100, bg=red_dark)
+    nextButtonFrame.place(x=710, y=565)
+    nextButton = Button(nextButtonFrame, bd=0, bg=red_dark, activebackground=red_dark, image=nextButtonPng,
+                            command=next_button_func)
+    nextButton.place(x=0, y=0)
+
+    def edit_button_func():
+        edit_page(todownloadPanelFrame, data2[current_movie][0])
+
+    editButton = Button(todownloadPanelFrame, bd=0, bg=red_light, activebackground=red_light, image=editButtonPng,
+                        command=edit_button_func)
+    editButton.place(x=710, y=35)
+
 
 # Watched Panel
 
@@ -692,7 +874,7 @@ def watched_panel_func():
         pass
 
     def back_button_func():
-        global data
+        global data3
         global maxLength
         global current_movie
         global next_movie
@@ -730,7 +912,7 @@ def watched_panel_func():
     backButton.place(x=0, y=0)
 
     def next_button_func():
-        global data
+        global data3
         global maxLength
         global current_movie
         global next_movie
