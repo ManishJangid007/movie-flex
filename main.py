@@ -631,8 +631,8 @@ def todownload_panel_func():
     release_month = 3
     global release_year
     release_year = 4
-    global download_status
-    download_status = 6
+    global watched_status
+    watched_status = 5
     global link
     link = 7
     global origin
@@ -655,9 +655,9 @@ def todownload_panel_func():
                                 font=(font, 30, 'normal'))
     releaseDateLabel.place(x=110, y=235)
 
-    downloadStatusLabel = Label(todownloadPanelFrame, text="Downloaded : " + data2[current_movie][download_status],
+    watchedStatusLabel = Label(todownloadPanelFrame, text="Watched : " + data2[current_movie][watched_status],
                                     bd=0, bg=red_light, fg=font_color, font=(font, 30, 'normal'))
-    downloadStatusLabel.place(x=110, y=290)
+    watchedStatusLabel.place(x=110, y=290)
 
     linkLabel = Label(todownloadPanelFrame, text="Link : ", bd=0, bg=red_light, fg=font_color,
                           font=(font, 30, 'normal'))
@@ -698,7 +698,7 @@ def todownload_panel_func():
         global release_day
         global release_month
         global release_year
-        global download_status
+        global watched_status
         global link
         global origin
 
@@ -712,7 +712,7 @@ def todownload_panel_func():
                 releaseDateLabel.config(
                     text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
                     str(data2[current_movie][release_month])) + " " + str(data2[current_movie][release_year]))
-                downloadStatusLabel.config(text="Downloaded : " + data2[current_movie][download_status])
+                watchedStatusLabel.config(text="Watched : " + data2[current_movie][watched_status])
                 linkEntry.delete(0, END)
                 linkEntry.insert(0, data2[current_movie][link])
                 counterEntry.delete(0, END)
@@ -738,7 +738,7 @@ def todownload_panel_func():
         global release_day
         global release_month
         global release_year
-        global download_status
+        global watched_status
         global link
         global origin
 
@@ -752,7 +752,7 @@ def todownload_panel_func():
                 releaseDateLabel.config(
                     text="Release Date : " + str(data2[current_movie][release_day]) + " " + month_string(
                         str(data2[current_movie][release_month])) + " " + str(data2[current_movie][release_year]))
-                downloadStatusLabel.config(text="Downloaded : " + data2[current_movie][download_status])
+                watchedStatusLabel.config(text="Watched : " + data2[current_movie][watched_status])
                 linkEntry.delete(0, END)
                 linkEntry.insert(0, data2[current_movie][link])
                 counterEntry.delete(0, END)
